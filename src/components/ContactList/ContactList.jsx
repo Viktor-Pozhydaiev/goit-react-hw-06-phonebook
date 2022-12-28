@@ -1,18 +1,21 @@
 import { Contact } from './Contact';
 import css from '../ContactList/Contact.module.css';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { getContacts } from 'redux/selectors';
 
-export const ContactList = ({ contacts, title, onDelete }) => {
+export const ContactList = ({ title }) => {
+  const contacts = useSelector(getContacts);
+
   return (
     <ul className={css.contacts_list}>
       <h2>{title}</h2>
-      {contacts.map(({ id, name, number }) => (
+      {contacts.map(contact => (
         <Contact
-          key={id}
-          id={id}
-          onDelete={onDelete}
-          name={name}
-          number={number}
+          key={contact.id}
+          id={contact.id}
+          name={contact.name}
+          number={contact.number}
         />
       ))}
     </ul>
@@ -20,12 +23,4 @@ export const ContactList = ({ contacts, title, onDelete }) => {
 };
 ContactList.propTypes = {
   title: PropTypes.string.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  contacts: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
 };

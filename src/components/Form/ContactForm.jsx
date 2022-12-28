@@ -1,49 +1,33 @@
 import css from '../Form/Form.module.css';
-import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addContacts } from 'redux/contactsSlice';
 
-export const ContactForm = ({ onSubmit }) => {
-  const [number, setNumber] = useState('');
-  const [name, setName] = useState('');
+export const ContactForm = () => {
+  const dispatch = useDispatch();
 
-  const handelChange = evt => {
-    const { name, value } = evt.target;
+  const handelSubmit = event => {
+    event.preventDefault();
 
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'number':
-        setNumber(value);
-        break;
-
-      default:
-        console.warn('You write something wrong, please try again !!!');
-    }
+    const form = event.target;
+    const name = event.target.name.value;
+    const number = event.target.number.value;
+    console.log(name, number);
+    dispatch(addContacts(name, number));
+    form.reset();
   };
 
-  const handelSubmit = evt => {
-    evt.preventDefault();
-    onSubmit({ number, name, id: nanoid() });
-    reset();
-  };
-  const reset = () => {
-    setName('');
-    setNumber('');
-  };
   return (
     <div>
-      <form onSubmit={handelSubmit} className={css.form_wrapper}>
+      <form className={css.form_wrapper} onSubmit={handelSubmit}>
         <p className={css.name_form}> Name</p>
         <input
           type="text"
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          value={name}
-          onChange={handelChange}
           id={nanoid()}
+          placeholder="Enter name.."
           required
         />
         <p className={css.phone_form}>Phone</p>
@@ -52,8 +36,7 @@ export const ContactForm = ({ onSubmit }) => {
           name="number"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          value={number}
-          onChange={handelChange}
+          placeholder="Enter number.."
           id={nanoid()}
           required
         />
@@ -64,5 +47,3 @@ export const ContactForm = ({ onSubmit }) => {
     </div>
   );
 };
-
-ContactForm.propTypes = { onSubmit: PropTypes.func.isRequired };
