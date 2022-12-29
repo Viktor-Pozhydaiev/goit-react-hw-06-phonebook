@@ -2,11 +2,15 @@ import css from '../ContactList/Contact.module.css';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { deleteContacts } from 'redux/contactsSlice';
+import Notiflix from 'notiflix';
 
 export const Contact = ({ id, number, name }) => {
   const dispatch = useDispatch();
 
-  const deleteContact = () => dispatch(deleteContacts(id));
+  const deleteContact = () => {
+    dispatch(deleteContacts(id));
+    Notiflix.Notify.warning(`You deleted contact ${name}. `);
+  };
 
   return (
     <li className={css.contact_item}>
